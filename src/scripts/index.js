@@ -21,9 +21,9 @@ const popupCloseButtons = document.querySelectorAll('.popup__close');
 
 const nameCurrent = document.querySelector('.profile__title');
 const jobCurrent = document.querySelector('.profile__description');
-const formElement = document.forms['edit-profile'];
-const nameInput = formElement.elements.name;
-const jobInput = formElement.elements.description;
+const profileForm = document.forms['edit-profile'];
+const nameInput = profileForm.elements.name;
+const jobInput = profileForm.elements.description;
 
 const cardForm = document.forms['new-place'];
 const cardNameInput = cardForm.elements['place-name'];
@@ -62,14 +62,14 @@ function openImagePopup(link, name) {
   openModal(imagePopup);
 };
 
-function handleFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
     evt.preventDefault();
     nameCurrent.textContent = nameInput.value;
     jobCurrent.textContent = jobInput.value;
     closeModal(editProfilePopup);
 }
 
-formElement.addEventListener('submit', handleFormSubmit);
+profileForm.addEventListener('submit', handleProfileFormSubmit);
 
 function handleAddCard(evt) {
   evt.preventDefault();

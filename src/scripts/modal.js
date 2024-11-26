@@ -10,8 +10,6 @@ function closeModal (popup) {
   document.removeEventListener('keydown', closeByEsc);
 };
 
-export {openModal, closeModal};
-
 function closeByOverlay(evt) {
   if (evt.target === evt.currentTarget) {
     closeModal(evt.target);
@@ -24,3 +22,5 @@ function closeByEsc(evt) {
     closeModal(openedPopup);
   };
 };
+
+export {openModal, closeModal};
