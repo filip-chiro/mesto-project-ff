@@ -1,31 +1,42 @@
 import '../styles/index.css';
+import { initialCards } from './cards';
+import { addCard, cardDeletion } from './card';
+import { openModal, closeModal } from './modal';
 
-// @todo: Темплейт карточки
-const cardTemplate = document.querySelector('#card-template').content;
 const cardsList = document.querySelector('.places__list');
-// @todo: DOM узлы
-// @todo: Функция создания карточки
-function addCard (cardName, cardLink, callDeletion) {
-  const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
 
-  cardElement.querySelector('.card__title').textContent = cardName;
-  cardElement.querySelector('.card__image').src = cardLink;
-  cardElement.querySelector('.card__image').alt = cardName;
+const popups = document.querySelectorAll('.popup');
 
-  const deleteButton = cardElement.querySelector('.card__delete-button');
+const profileEditButton = document.querySelector('.profile__edit-button');
+const addCardButton = document.querySelector('.profile__add-button');
 
-  deleteButton.addEventListener('click', () => {
-    callDeletion(cardElement);
-  });
+const editProfilePopup = document.querySelector(".popup_type_edit");
+const newCardPopup = document.querySelector('.popup_type_new-card');
 
-  return cardElement;
-};
-// @todo: Функция удаления карточки
-function cardDeletion (element) {
-  element.remove();
-};
+const popupCloseButtons = document.querySelectorAll('.popup__close');
+
 // @todo: Вывести карточки на страницу
- initialCards.forEach(element => {
+initialCards.forEach(element => {
   const cardFinal = addCard(element.name, element.link, cardDeletion);
   cardsList.append(cardFinal);
  });
+
+popups.forEach(popup => {
+  popup.classList.add('popup_is-animated');
+})
+
+profileEditButton.addEventListener('click', () => {
+  openModal(editProfilePopup);
+});
+
+addCardButton.addEventListener('click', () => {
+  openModal(newCardPopup);
+})
+
+popupCloseButtons.forEach(button => {
+  button.addEventListener('click', (evt) => {
+    const popup = evt.target.closest('.popup');
+    closeModal(popup);
+  });
+});
+
