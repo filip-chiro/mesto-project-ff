@@ -1,6 +1,6 @@
 import '../styles/index.css';
 import { initialCards } from './cards';
-import { addCard, cardDeletion } from './card';
+import { addCard, deleteCard, likeCard } from './card';
 import { openModal, closeModal } from './modal';
 
 const cardsList = document.querySelector('.places__list');
@@ -13,25 +13,40 @@ const addCardButton = document.querySelector('.profile__add-button');
 const editProfilePopup = document.querySelector(".popup_type_edit");
 const newCardPopup = document.querySelector('.popup_type_new-card');
 
+const imagePopup = document.querySelector('.popup_type_image');
+const cardImagePopup = imagePopup.querySelector('.popup__image');
+const cardCaption = imagePopup.querySelector('.popup__caption');
+
 const popupCloseButtons = document.querySelectorAll('.popup__close');
 
-// @todo: Вывести карточки на страницу
+const nameCurrent = document.querySelector('.profile__title');
+const jobCurrent = document.querySelector('.profile__description');
+const formElement = document.forms['edit-profile'];
+const nameInput = formElement.elements.name;
+const jobInput = formElement.elements.description;
+
+const cardForm = document.forms['new-place'];
+const cardNameInput = cardForm.elements['place-name'];
+const cardLinkInput = cardForm.elements['link'];
+
 initialCards.forEach(element => {
-  const cardFinal = addCard(element.name, element.link, cardDeletion);
+  const cardFinal = addCard(element.name, element.link, deleteCard, openImagePopup, likeCard);
   cardsList.append(cardFinal);
  });
 
 popups.forEach(popup => {
   popup.classList.add('popup_is-animated');
-})
+});
 
 profileEditButton.addEventListener('click', () => {
+  nameInput.value = nameCurrent.textContent;
+  jobInput.value = jobCurrent.textContent;
   openModal(editProfilePopup);
 });
 
 addCardButton.addEventListener('click', () => {
   openModal(newCardPopup);
-})
+});
 
 popupCloseButtons.forEach(button => {
   button.addEventListener('click', (evt) => {
@@ -40,3 +55,30 @@ popupCloseButtons.forEach(button => {
   });
 });
 
+function openImagePopup(link, name) {
+  cardImagePopup.src = link;
+  cardImagePopup.alt = name;
+  cardCaption.textContent = name;
+  openModal(imagePopup);
+};
+
+function handleFormSubmit(evt) {
+    evt.preventDefault();
+    nameCurrent.textContent = nameInput.value;
+    jobCurrent.textContent = jobInput.value;
+    closeModal(editProfilePopup);
+}
+
+formElement.addEventListener('submit', handleFormSubmit);
+
+function handleAddCard(evt) {
+  evt.preventDefault();
+  const name = cardNameInput.value;
+  const link = cardLinkInput.value;
+  const newCard = addCard(name, link, deleteCard, openImagePopup, likeCard);
+  cardsList.prepend(newCard);
+  cardForm.reset();
+  closeModal(newCardPopup);
+}
+
+cardForm.addEventListener('submit', handleAddCard);
