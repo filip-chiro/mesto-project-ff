@@ -2,6 +2,7 @@ import '../styles/index.css';
 import { initialCards } from './cards';
 import { addCard, deleteCard, likeCard } from './card';
 import { openModal, closeModal } from './modal';
+import { enableValidation, clearValidation } from './validation';
 
 const cardsList = document.querySelector('.places__list');
 
@@ -11,6 +12,7 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
 
 const editProfilePopup = document.querySelector(".popup_type_edit");
+const editProfileForm = document.querySelector('.popup__form[name="edit-profile"]');
 const newCardPopup = document.querySelector('.popup_type_new-card');
 
 const imagePopup = document.querySelector('.popup_type_image');
@@ -29,6 +31,15 @@ const cardForm = document.forms['new-place'];
 const cardNameInput = cardForm.elements['place-name'];
 const cardLinkInput = cardForm.elements['link'];
 
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
+
 initialCards.forEach(element => {
   const cardFinal = addCard(element.name, element.link, deleteCard, openImagePopup, likeCard);
   cardsList.append(cardFinal);
@@ -41,6 +52,7 @@ popups.forEach(popup => {
 profileEditButton.addEventListener('click', () => {
   nameInput.value = nameCurrent.textContent;
   jobInput.value = jobCurrent.textContent;
+  clearValidation(editProfileForm, validationConfig);
   openModal(editProfilePopup);
 });
 
@@ -79,6 +91,9 @@ function handleAddCard(evt) {
   cardsList.prepend(newCard);
   cardForm.reset();
   closeModal(newCardPopup);
+  clearValidation(cardForm, validationConfig);
 }
 
 cardForm.addEventListener('submit', handleAddCard);
+
+enableValidation(validationConfig);
