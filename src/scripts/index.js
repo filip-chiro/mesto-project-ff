@@ -57,6 +57,7 @@ profileEditButton.addEventListener('click', () => {
 });
 
 addCardButton.addEventListener('click', () => {
+  clearValidation(cardForm, validationConfig);
   openModal(newCardPopup);
 });
 
@@ -91,9 +92,9 @@ function handleAddCard(evt) {
   cardsList.prepend(newCard);
   cardForm.reset();
   closeModal(newCardPopup);
-  clearValidation(cardForm, validationConfig);
 }
 
 cardForm.addEventListener('submit', handleAddCard);
 
 enableValidation(validationConfig);
+
