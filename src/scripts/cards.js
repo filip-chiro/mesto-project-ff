@@ -1,4 +1,4 @@
-export const initialCards = [
+const initialCards = [
     {
       name: "Архыз",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
@@ -24,4 +24,6 @@ export const initialCards = [
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
     }
 ];
+
+// style="background-image: url(<%=require('./images/avatar.jpg')%>)"
 

@@ -1,8 +1,8 @@
 import '../styles/index.css';
-import { initialCards } from './cards';
 import { addCard, deleteCard, likeCard } from './card';
 import { openModal, closeModal } from './modal';
 import { enableValidation, clearValidation } from './validation';
+import { addNewCard, editProfile, getCards, getUserInfo } from './api';
 
 const cardsList = document.querySelector('.places__list');
 
@@ -23,6 +23,8 @@ const popupCloseButtons = document.querySelectorAll('.popup__close');
 
 const nameCurrent = document.querySelector('.profile__title');
 const jobCurrent = document.querySelector('.profile__description');
+const avatarCurrent = document.querySelector('.profile__image');
+
 const profileForm = document.forms['edit-profile'];
 const nameInput = profileForm.elements.name;
 const jobInput = profileForm.elements.description;
@@ -30,6 +32,9 @@ const jobInput = profileForm.elements.description;
 const cardForm = document.forms['new-place'];
 const cardNameInput = cardForm.elements['place-name'];
 const cardLinkInput = cardForm.elements['link'];
+
+let userId = '';
+const promises = [getUserInfo(), getCards()];
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -40,10 +45,21 @@ const validationConfig = {
   errorClass: 'popup__error_visible'
 };
 
-initialCards.forEach(element => {
-  const cardFinal = addCard(element.name, element.link, deleteCard, openImagePopup, likeCard);
-  cardsList.append(cardFinal);
- });
+Promise.all(promises)
+  .then(([data, cards]) => {
+    nameCurrent.textContent = data.name;
+    jobCurrent.textContent = data.about;
+    userId = data['_id'];
+    avatarCurrent.style.backgroundImage = `url("${data.avatar}")`;
+    
+    cards.forEach(element => {
+      const cardFinal = addCard(element.name, element.link, deleteCard, openImagePopup, likeCard);
+      cardsList.append(cardFinal);
+     });
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 popups.forEach(popup => {
   popup.classList.add('popup_is-animated');
@@ -77,22 +93,29 @@ function openImagePopup(link, name) {
 
 function handleProfileFormSubmit(evt) {
     evt.preventDefault();
-    nameCurrent.textContent = nameInput.value;
-    jobCurrent.textContent = jobInput.value;
+    editProfile(nameInput.value, jobInput.value)
+      .then(() => {
+        nameCurrent.textContent = nameInput.value;
+        jobCurrent.textContent = jobInput.value;
+      });
     closeModal(editProfilePopup);
-}
+};
 
 profileForm.addEventListener('submit', handleProfileFormSubmit);
 
 function handleAddCard(evt) {
   evt.preventDefault();
-  const name = cardNameInput.value;
-  const link = cardLinkInput.value;
-  const newCard = addCard(name, link, deleteCard, openImagePopup, likeCard);
-  cardsList.prepend(newCard);
-  cardForm.reset();
-  closeModal(newCardPopup);
-}
+  addNewCard(cardNameInput.value, cardLinkInput.value)
+    .then(() => {
+      const name = cardNameInput.value;
+      const link = cardLinkInput.value;
+      const newCard = addCard(name, link, deleteCard, openImagePopup, likeCard);
+      cardsList.prepend(newCard);
+      cardForm.reset();
+      closeModal(newCardPopup);
+    })
+    .catch(err => console.log(err));
+};
 
 cardForm.addEventListener('submit', handleAddCard);
 
