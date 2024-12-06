@@ -53,4 +53,20 @@ const getCards = () => {
     .then(getServerResponse)
 };
 
-export { getUserInfo, getCards, editProfile, addNewCard };
+const deleteCardApi = (id) => {
+  return fetch(`${apiConfig.baseUrl}/cards/${id}`, {
+    method: 'DELETE',
+    headers: apiConfig.headers,
+  })
+    .then(getServerResponse)
+};
+
+const likeCardApi = (id, isLiked) => {
+  return fetch(`${apiConfig.baseUrl}//cards/likes/${id}`, {
+    method: isLiked? 'DELETE': 'PUT',
+    headers: apiConfig.headers,
+  })
+    .then(getServerResponse)
+};
+
+export { getUserInfo, getCards, editProfile, addNewCard, deleteCardApi, likeCardApi};

@@ -33,7 +33,7 @@ const cardForm = document.forms['new-place'];
 const cardNameInput = cardForm.elements['place-name'];
 const cardLinkInput = cardForm.elements['link'];
 
-let userId = '';
+let myId = '';
 const promises = [getUserInfo(), getCards()];
 
 const validationConfig = {
@@ -49,11 +49,11 @@ Promise.all(promises)
   .then(([data, cards]) => {
     nameCurrent.textContent = data.name;
     jobCurrent.textContent = data.about;
-    userId = data['_id'];
     avatarCurrent.style.backgroundImage = `url("${data.avatar}")`;
+    myId = data['_id'];
     
-    cards.forEach(element => {
-      const cardFinal = addCard(element.name, element.link, deleteCard, openImagePopup, likeCard);
+    cards.forEach(card => {
+      const cardFinal = addCard(card._id, card.name, card.link, deleteCard, card.likes, openImagePopup, likeCard, card.owner._id, myId);
       cardsList.append(cardFinal);
      });
   })
@@ -106,10 +106,10 @@ profileForm.addEventListener('submit', handleProfileFormSubmit);
 function handleAddCard(evt) {
   evt.preventDefault();
   addNewCard(cardNameInput.value, cardLinkInput.value)
-    .then(() => {
+    .then((card) => {
       const name = cardNameInput.value;
       const link = cardLinkInput.value;
-      const newCard = addCard(name, link, deleteCard, openImagePopup, likeCard);
+      const newCard = addCard(card._id, name, link, deleteCard, card.likes, openImagePopup, likeCard, card.owner._id, myId);
       cardsList.prepend(newCard);
       cardForm.reset();
       closeModal(newCardPopup);
