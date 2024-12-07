@@ -11,7 +11,7 @@ const getServerResponse = res => {
     return res.json();
   }
   return Promise.reject(`Ошибка: ${res.status}`);
-}
+};
 
 const getUserInfo = () => {
   return fetch(`${apiConfig.baseUrl}/users/me`, {
@@ -69,4 +69,15 @@ const likeCardApi = (id, isLiked) => {
     .then(getServerResponse)
 };
 
-export { getUserInfo, getCards, editProfile, addNewCard, deleteCardApi, likeCardApi};
+const editAvatarApi = (link) => {
+  return fetch(`${apiConfig.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: apiConfig.headers,
+    body: JSON.stringify({
+      avatar: link
+    })
+  })
+    .then(getServerResponse)
+};
+
+export { getUserInfo, getCards, editProfile, addNewCard, deleteCardApi, likeCardApi, editAvatarApi};
